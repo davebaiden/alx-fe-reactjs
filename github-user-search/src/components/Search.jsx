@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { searchUsers } from "../services/githubService";
-import { fetchUserData } from "../services/githubService";
-
 
 function Search() {
   const [username, setUsername] = useState("");
@@ -11,8 +9,8 @@ function Search() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Function the test expects
-  const fetchUserData = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
     setError("");
     setResults([]);
@@ -25,11 +23,6 @@ function Search() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    fetchUserData(); // Call fetchUserData when form submits
   };
 
   return (
@@ -68,9 +61,8 @@ function Search() {
           </a>
         </div>
       ))}
-    </div>          
+    </div>
   );
 }
 
 export default Search;
-export { fetchUserData }; // Export fetchUserData for tests
