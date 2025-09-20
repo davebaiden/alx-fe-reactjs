@@ -66,7 +66,7 @@ function Search() {
           </a>
         </div>
       ))}
-    </div>
+    </div>          
   );
 }
 
