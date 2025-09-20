@@ -1,27 +1,27 @@
 import { useState } from "react";
-import { fetchUserData } from "../services/githubService";
+import { searchUsers } from "../services/githubService";
 
-function Search({ setUser, setLoading, setError }) {
+function Search() {
   const [username, setUsername] = useState("");
-  const [userData, setUserData] = useState(null);
-  const [loading, setIsLoading] = useState(false);
-  const [error, setIsError] = useState("");
+  const [location, setLocation] = useState("");
+  const [minRepos, setMinRepos] = useState("");
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // prevent page reload
-    if (!username) return;
-
-    setIsLoading(true);
-    setIsError("");
-    setUserData(null);
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setResults([]);
 
     try {
-      const data = await fetchUserData(username);
-      setUserData(data);
+      const data = await searchUsers({ username, location, minRepos });
+      setResults(data.items || []);
     } catch (err) {
-      setIsError("Looks like we cant find the user");
+      setError("Something went wrong. Try again.");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -30,25 +30,37 @@ function Search({ setUser, setLoading, setError }) {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
+          placeholder="Username"
           value={username}
-          onChange={(e) => setUsername(e.target.value)} // <-- target.value
-          placeholder="Enter GitHub username"
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder="Min Repositories"
+          value={minRepos}
+          onChange={(e) => setMinRepos(e.target.value)}
         />
         <button type="submit">Search</button>
       </form>
 
-      {/* Conditional rendering */}
       {loading && <p>Loading...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {userData && (
-        <div className="user-card">
-          <img src={userData.avatar_url} alt={userData.login} width={100} /> {/* <-- avatar_url, img */}
-          <h2>{userData.login}</h2> {/* <-- login */}
-          <a href={userData.html_url} target="_blank" rel="noreferrer">
+      {error && <p>{error}</p>}
+
+      {results.map((user) => (
+        <div key={user.id}>
+          <img src={user.avatar_url} alt={user.login} width={50} />
+          <p>{user.login}</p>
+          <a href={user.html_url} target="_blank" rel="noreferrer">
             View Profile
           </a>
         </div>
-      )}
+      ))}
     </div>
   );
 }
