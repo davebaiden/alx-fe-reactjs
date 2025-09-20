@@ -3,7 +3,7 @@ import { fetchUserData } from "../services/githubService";
 
 function Search() {
   const [username, setUsername] = useState("");
-  const [user, setUser] = useState(null);
+  const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -11,13 +11,17 @@ function Search() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    setUser(null);
+    setResults([]);
 
     try {
-      const data = await fetchUserData(username);
-      setUser(data);
+      const user = await fetchUserData(username);
+      if (user) {
+        setResults([user]); // Wrap in array for rendering
+      } else {
+        setError("Looks like we cant find the user");
+      }
     } catch (err) {
-      setError("Looks like we can't find the user");
+      setError("Looks like we cant find the user");
     } finally {
       setLoading(false);
     }
@@ -28,7 +32,7 @@ function Search() {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Enter GitHub username"
+          placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
@@ -38,15 +42,15 @@ function Search() {
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {user && (
-        <div>
-          <img src={user.avatar_url} alt={user.login} width={100} />
-          <h2>{user.login}</h2>
+      {results.map((user) => (
+        <div key={user.id}>
+          <img src={user.avatar_url} alt={user.login} width={50} />
+          <p>{user.login}</p>
           <a href={user.html_url} target="_blank" rel="noreferrer">
             View Profile
           </a>
         </div>
-      )}
+      ))}
     </div>
   );
 }
