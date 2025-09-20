@@ -17,7 +17,11 @@ function Search() {
 
     try {
       const data = await searchUsers({ username, location, minRepos });
-      setResults(data.items || []);
+      if (data.items && data.items.length > 0) {
+        setResults(data.items);
+      } else {
+        setError("Looks like we can't find the user");
+      }
     } catch (err) {
       setError("Something went wrong. Try again.");
     } finally {
@@ -50,7 +54,7 @@ function Search() {
       </form>
 
       {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       {results.map((user) => (
         <div key={user.id}>
