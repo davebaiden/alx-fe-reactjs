@@ -20,7 +20,7 @@ function Search() {
       } else {
         setError("Looks like we cant find the user");
       }
-    } catch (err) {
+    } catch {
       setError("Looks like we cant find the user");
     } finally {
       setLoading(false);
@@ -45,7 +45,8 @@ function Search() {
       {results.map((user) => (
         <div key={user.id}>
           <img src={user.avatar_url} alt={user.login} width={50} />
-          <p>{user.login}</p>
+          <p>Username: {user.login}</p>
+          {user.location && <p>Location: {user.location}</p>} {/* Added location display */}
           <a href={user.html_url} target="_blank" rel="noreferrer">
             View Profile
           </a>
