@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { searchUsers } from "../services/githubService";
+import { fetchUserData } from "../services/githubService";
 
 function Search() {
   const [username, setUsername] = useState("");
-  const [location, setLocation] = useState("");
-  const [minRepos, setMinRepos] = useState("");
-  const [results, setResults] = useState([]);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -13,17 +11,13 @@ function Search() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    setResults([]);
+    setUser(null);
 
     try {
-      const data = await searchUsers({ username, location, minRepos });
-      if (data.items && data.items.length > 0) {
-        setResults(data.items);
-      } else {
-        setError("Looks like we can't find the user");
-      }
+      const data = await fetchUserData(username);
+      setUser(data);
     } catch (err) {
-      setError("Something went wrong. Try again.");
+      setError("Looks like we can't find the user");
     } finally {
       setLoading(false);
     }
@@ -34,21 +28,9 @@ function Search() {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Username"
+          placeholder="Enter GitHub username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-        />
-        <input
-          type="number"
-          placeholder="Min Repositories"
-          value={minRepos}
-          onChange={(e) => setMinRepos(e.target.value)}
         />
         <button type="submit">Search</button>
       </form>
@@ -56,15 +38,15 @@ function Search() {
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {results.map((user) => (
-        <div key={user.id}>
-          <img src={user.avatar_url} alt={user.login} width={50} />
-          <p>{user.login}</p>
+      {user && (
+        <div>
+          <img src={user.avatar_url} alt={user.login} width={100} />
+          <h2>{user.login}</h2>
           <a href={user.html_url} target="_blank" rel="noreferrer">
             View Profile
           </a>
         </div>
-      ))}
+      )}
     </div>
   );
 }
