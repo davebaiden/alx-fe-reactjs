@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 
 function RecipeDetail() {
@@ -16,35 +16,51 @@ function RecipeDetail() {
   }, [id]);
 
   if (!recipe) {
-    return <div className="text-center text-gray-500 mt-10">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen text-gray-700 text-lg">
+        Loading recipe details...
+      </div>
+    );
   }
 
   return (
     <div className="bg-gray-50 min-h-screen p-6">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-md p-6">
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-8">
         <img
           src={recipe.image}
           alt={recipe.title}
-          className="w-full h-64 object-cover rounded-xl mb-6"
+          className="w-full h-64 object-cover rounded-lg mb-6"
         />
-        <h1 className="text-3xl font-bold text-green-700 mb-4">{recipe.title}</h1>
-        <p className="text-gray-700 mb-6">{recipe.summary}</p>
 
-        <div className="mb-6">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-3">Ingredients</h2>
-          <ul className="list-disc list-inside text-gray-600 space-y-1">
-            <li>Ingredient 1</li>
-            <li>Ingredient 2</li>
-            <li>Ingredient 3</li>
+        <h1 className="text-3xl font-bold text-green-700 mb-4">
+          {recipe.title}
+        </h1>
+
+        <p className="text-gray-600 mb-6">{recipe.description}</p>
+
+        {/* Ingredients Section */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-3">
+            Ingredients
+          </h2>
+          <ul className="list-disc list-inside space-y-2 text-gray-700">
+            {recipe.ingredients &&
+              recipe.ingredients.map((ingredient, index) => (
+                <li key={index}>{ingredient}</li>
+              ))}
           </ul>
         </div>
 
+        {/* Instructions Section */}
         <div>
-          <h2 className="text-2xl font-semibold text-gray-800 mb-3">Instructions</h2>
-          <ol className="list-decimal list-inside text-gray-600 space-y-1">
-            <li>Step 1: Do this...</li>
-            <li>Step 2: Then this...</li>
-            <li>Step 3: Finish with this...</li>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-3">
+            Instructions
+          </h2>
+          <ol className="list-decimal list-inside space-y-3 text-gray-700 leading-relaxed">
+            {recipe.instructions &&
+              recipe.instructions.map((step, index) => (
+                <li key={index}>{step}</li>
+              ))}
           </ol>
         </div>
 
