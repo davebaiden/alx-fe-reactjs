@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const HomePage = () => {
-  const recipes = [
-    { id: 1, title: "Spaghetti Bolognese", description: "A classic Italian pasta dish." },
-    { id: 2, title: "Chicken Curry", description: "A spicy and flavorful curry." },
-    { id: 3, title: "Beef Stir Fry", description: "Quick and tasty stir-fried beef." },
-  ];
+  const [recipes, setRecipes] = useState([]);
+
+  useEffect(() => {
+    fetch("/data.json")
+      .then((response) => response.json())
+      .then((data) => setRecipes(data))
+      .catch((error) => console.error("Error loading recipes:", error));
+  }, []);
 
   return (
     <div className="p-6">
