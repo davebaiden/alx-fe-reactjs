@@ -4,37 +4,50 @@ function AddRecipeForm() {
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState("");
   const [steps, setSteps] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
+
+  // Validation function
+  const validate = () => {
+    const newErrors = {};
+
+    if (!title.trim()) {
+      newErrors.title = "Title is required.";
+    }
+
+    if (!ingredients.trim()) {
+      newErrors.ingredients = "Ingredients are required.";
+    } else {
+      const ingredientsList = ingredients.split(",").map((item) => item.trim());
+      if (ingredientsList.length < 2) {
+        newErrors.ingredients = "Please include at least two ingredients.";
+      }
+    }
+
+    if (!steps.trim()) {
+      newErrors.steps = "Preparation steps are required.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Validation checks
-    if (!title.trim() || !ingredients.trim() || !steps.trim()) {
-      setError("All fields are required.");
-      return;
-    }
-
-    const ingredientsList = ingredients.split(",").map((item) => item.trim());
-    if (ingredientsList.length < 2) {
-      setError("Please include at least two ingredients.");
-      return;
-    }
-
-    setError("");
+    if (!validate()) return;
 
     const newRecipe = {
       title,
-      ingredients: ingredientsList,
+      ingredients: ingredients.split(",").map((item) => item.trim()),
       instructions: steps.split(".").map((step) => step.trim()).filter(Boolean),
     };
 
     console.log("Recipe submitted:", newRecipe);
 
-    // Reset form after submission
+    // Reset form
     setTitle("");
     setIngredients("");
     setSteps("");
+    setErrors({});
   };
 
   return (
@@ -46,10 +59,6 @@ function AddRecipeForm() {
         <h1 className="text-3xl font-bold text-green-700 mb-6 text-center">
           Add New Recipe
         </h1>
-
-        {error && (
-          <p className="text-red-500 text-center mb-4 font-medium">{error}</p>
-        )}
 
         {/* Recipe Title */}
         <div className="mb-5">
@@ -63,6 +72,9 @@ function AddRecipeForm() {
             placeholder="Enter recipe title"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none"
           />
+          {errors.title && (
+            <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+          )}
         </div>
 
         {/* Ingredients */}
@@ -77,6 +89,9 @@ function AddRecipeForm() {
             rows="3"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none"
           ></textarea>
+          {errors.ingredients && (
+            <p className="text-red-500 text-sm mt-1">{errors.ingredients}</p>
+          )}
         </div>
 
         {/* Preparation Steps */}
@@ -91,6 +106,9 @@ function AddRecipeForm() {
             rows="4"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none"
           ></textarea>
+          {errors.steps && (
+            <p className="text-red-500 text-sm mt-1">{errors.steps}</p>
+          )}
         </div>
 
         {/* Submit Button */}
