@@ -4,6 +4,7 @@ import Profile from './components/Profile'
 import ProfileDetails from './components/ProfileDetails'
 import ProfileSettings from './components/ProfileSettings'
 import Post from './components/Post'
+import BlogPost from './components/BlogPost'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -12,7 +13,8 @@ function App() {
       <div>
         <nav>
           <Link to="/">Home</Link> | <Link to="/profile">Profile</Link> |{' '}
-          <Link to="/posts/1">Post Example</Link>
+          <Link to="/posts/1">Post Example</Link> |{' '}
+          <Link to="/blog/123">Blog Example</Link>
         </nav>
 
         <Routes>
@@ -34,6 +36,9 @@ function App() {
 
           {/* Dynamic route for posts */}
           <Route path="/posts/:id" element={<Post />} />
+
+          {/* Dynamic route for blog posts */}
+          <Route path="/blog/:id" element={<BlogPost />} />
         </Routes>
       </div>
     </BrowserRouter>
