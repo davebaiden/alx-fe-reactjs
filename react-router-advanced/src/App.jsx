@@ -1,4 +1,4 @@
-import { Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import Home from './components/Home'
 import Profile from './components/Profile'
 import ProfileDetails from './components/ProfileDetails'
@@ -8,33 +8,35 @@ import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   return (
-    <div>
-      <nav>
-        <Link to="/">Home</Link> | <Link to="/profile">Profile</Link> |{' '}
-        <Link to="/posts/1">Post Example</Link>
-      </nav>
+    <BrowserRouter>
+      <div>
+        <nav>
+          <Link to="/">Home</Link> | <Link to="/profile">Profile</Link> |{' '}
+          <Link to="/posts/1">Post Example</Link>
+        </nav>
 
-      <Routes>
-        <Route path="/" element={<Home />} />
+        <Routes>
+          <Route path="/" element={<Home />} />
 
-        {/* Protected route for Profile */}
-        <Route
-          path="/profile/*"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        >
-          {/* Nested routes under Profile */}
-          <Route path="details" element={<ProfileDetails />} />
-          <Route path="settings" element={<ProfileSettings />} />
-        </Route>
+          {/* Protected route for Profile */}
+          <Route
+            path="/profile/*"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          >
+            {/* Nested routes under Profile */}
+            <Route path="details" element={<ProfileDetails />} />
+            <Route path="settings" element={<ProfileSettings />} />
+          </Route>
 
-        {/* Dynamic route for posts */}
-        <Route path="/posts/:id" element={<Post />} />
-      </Routes>
-    </div>
+          {/* Dynamic route for posts */}
+          <Route path="/posts/:id" element={<Post />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   )
 }
 
