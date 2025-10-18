@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import TodoList from '../components/TodoList';
 
@@ -10,9 +10,14 @@ describe('TodoList Component', () => {
     expect(screen.getByText('Build a Todo App')).toBeInTheDocument();
   });
 
-  test('renders a title', () => {
+  test('adds a new todo', () => {
     render(<TodoList />);
-    const title = screen.getByText(/todo list/i);
-    expect(title).toBeInTheDocument();
+    const input = screen.getByPlaceholderText('Add a new todo...');
+    const button = screen.getByText('Add');
+
+    fireEvent.change(input, { target: { value: 'New Todo' } });
+    fireEvent.click(button);
+
+    expect(screen.getByText('New Todo')).toBeInTheDocument();
   });
 });
